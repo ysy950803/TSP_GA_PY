@@ -8,30 +8,36 @@ roulette = []
 fitnessValues = []
 values = []
 population = []
-current_best = {}
-best_value = None
 best = []
-UNCHANGED_GENS = 0
+
+best_value = None
+current_best = {}
+
 mutation_times = 0
+current_generation = 0
+UNCHANGED_GENS = 0
+
+cities_num = 0
+
 POPULATION_SIZE = 30
 CROSSOVER_PROBABILITY = 0.9
 MUTATION_PROBABILITY = 0.01
-current_generation = 0
-GET_TIME = 2048
+EVOLUTION_TIME = 2048
 
 
+# 计算城市间的距离
 def count_distance():
     global dis
-    length = len(points)
     # dis = [[0] * length] * length
-    for i in range(length):
+    for i in range(cities_num):
         dis_row = []
-        for j in range(length):
+        for j in range(cities_num):
             # dis[i][j] = distance(points[i], points[j])
             dis_row.append(int(distance(points[i], points[j])))
         dis.append(dis_row)
 
 
+# 计算解值
 def evaluate(individual):
     ind_len = len(individual)
     dis_sum = dis[individual[0]][individual[ind_len - 1]]
@@ -40,6 +46,7 @@ def evaluate(individual):
     return dis_sum
 
 
+# 随机混淆个体
 def random_individual(n):
     a = []
     for i in range(n):
@@ -48,12 +55,15 @@ def random_individual(n):
     return a
 
 
+# 对构建完的轮盘赌序列进行淘汰操作
+# 即开始轮盘赌
 def wheel_out(rand):
     for i in range(len(roulette)):
         if rand <= roulette[i]:
             return i
 
 
+# 构建轮盘赌序列
 def set_roulette():
     global fitnessValues, roulette
 
@@ -68,6 +78,7 @@ def set_roulette():
         roulette[i4] += roulette[i4 - 1]
 
 
+# 获取当前最优值
 def get_current_best():
     best_p = 0
     current_best_value = values[0]
@@ -79,6 +90,7 @@ def get_current_best():
     return {'best_position': best_p, 'best_value': current_best_value}
 
 
+# 刷新最优值
 def set_best_value():
     global current_best, best_value, best, UNCHANGED_GENS, values
 
@@ -94,6 +106,7 @@ def set_best_value():
         UNCHANGED_GENS = 1
 
 
+# 变异方法二（切片变换）
 def push_mutate(seq):
     global mutation_times
     mutation_times += 1
@@ -111,6 +124,7 @@ def push_mutate(seq):
     return copy.deepcopy(s2)
 
 
+# 变异方法一（随机对称位变换）
 def do_mutate(seq):
     global mutation_times
     mutation_times += 1
@@ -126,6 +140,7 @@ def do_mutate(seq):
     return seq
 
 
+# 变异
 def mutation():
     for i in range(POPULATION_SIZE):
         if random.random() < MUTATION_PROBABILITY:
@@ -136,6 +151,7 @@ def mutation():
             i -= 1
 
 
+# 获取（产生）进化的子个体
 def get_child(pre_or_next, x, y):
     solution = []
     px = copy.deepcopy(population[x])
@@ -156,6 +172,7 @@ def get_child(pre_or_next, x, y):
     return solution
 
 
+# 交叉操作
 def do_crossover(x, y):
     child_1 = get_child(False, x, y)
     child_2 = get_child(True, x, y)
@@ -163,6 +180,7 @@ def do_crossover(x, y):
     population[y] = child_2
 
 
+# 交叉
 def crossover():
     queue = []
     for k in range(POPULATION_SIZE):
@@ -173,6 +191,7 @@ def crossover():
         do_crossover(queue[i], queue[i + 1])
 
 
+# 选择
 def selection():
     global population
     parents = []
@@ -198,10 +217,11 @@ def next_generation():
 
 
 def initialize():
-    global values, fitnessValues, roulette
+    global values, fitnessValues, roulette, cities_num
+    cities_num = len(points)
     count_distance()
     for i in range(POPULATION_SIZE):
-        population.append(random_individual(len(points)))
+        population.append(random_individual(cities_num))
     values = [0] * len(population)
     fitnessValues = [0] * len(values)
     roulette = [0] * len(fitnessValues)
@@ -271,8 +291,8 @@ if __name__ == '__main__':
     init_data()
     initialize()
     print('Start GA TSP...')
-    while GET_TIME > 0:
+    while EVOLUTION_TIME > 0:
         next_generation()
-        GET_TIME -= 1
+        EVOLUTION_TIME -= 1
         print(best_value)
     print('End...')
