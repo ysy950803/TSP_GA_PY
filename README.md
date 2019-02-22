@@ -1,5 +1,5 @@
 # TSP_GA_PY
-Solve Traveling Salesman Problem with Genetic Algorithm in Python.
+Solve Traveling Salesman Problem with Genetic Algorithm in Python. (Original project in JS: https://github.com/ysy950803/GeneticAlgorithm-TSP)
 
 ## Solutions
 We can get the best solution 108137 in pr76 and 7526 in berlin52.
