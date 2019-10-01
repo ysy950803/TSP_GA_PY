@@ -28,11 +28,9 @@ EVOLUTION_TIME = 2048
 # 计算城市间的距离
 def count_distance():
     global dis
-    # dis = [[0] * length] * length
     for i in range(cities_num):
         dis_row = []
         for j in range(cities_num):
-            # dis[i][j] = distance(points[i], points[j])
             dis_row.append(int(distance(points[i], points[j])))
         dis.append(dis_row)
 
@@ -222,9 +220,7 @@ def initialize():
     count_distance()
     for i in range(POPULATION_SIZE):
         population.append(random_individual(cities_num))
-    values = [0] * len(population)
-    fitnessValues = [0] * len(values)
-    roulette = [0] * len(fitnessValues)
+    values = fitnessValues = roulette = [0] * POPULATION_SIZE
     set_best_value()
 
 
