@@ -12,14 +12,8 @@ def swap(lst, x, y):
 
 
 def next_of_list(lst, index):
-    if index == len(lst) - 1:
-        return lst[0]
-    else:
-        return lst[index + 1]
+    return lst[(index + 1) % len(lst)]
 
 
 def pre_of_list(lst, index):
-    if index == 0:
-        return lst[len(lst) - 1]
-    else:
-        return lst[index - 1]
+    return lst[(index - 1) % len(lst)]
